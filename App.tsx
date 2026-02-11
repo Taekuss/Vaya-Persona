@@ -1,32 +1,31 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import ChatComponent from './components/ChatComponent';
 import { 
-  Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer,
+  RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer,
   Radar as RechartsRadar
 } from 'recharts';
 import { 
-  Palette, 
-  BookOpen, 
-  CheckCircle2, 
-  AlertCircle, 
   Info,
+  AlertCircle,
+  Clock,
   Layers,
-  Smartphone,
-  Target,
-  MessageCircle,
-  BrainCircuit,
   MessageSquare,
-  X
+  CheckCircle2
 } from 'lucide-react';
-import { PERSONALITY_TRAITS, TIMELINE_DATA, PROBLEMS_NEEDS, TOUCHPOINTS, PALETTE } from './constants';
+import { PERSONALITY_TRAITS, TIMELINE_DATA, PROBLEMS_NEEDS, TOUCHPOINTS } from './constants';
 
+/**
+ * Main application component for the Persona Dashboard of Vaya.
+ * This component manages layout, sections, dark mode, and the chat overlay.
+ */
 const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState('wie');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
+  // Sync scroll position with the sidebar's active section.
   useEffect(() => {
     const sectionElement = document.getElementById(activeSection);
     if (sectionElement) {
@@ -34,14 +33,26 @@ const App: React.FC = () => {
     }
   }, [activeSection]);
 
+  // Handle dark mode side effects on the document root and body.
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (isDarkMode) {
+      root.classList.add('dark');
+      document.body.style.backgroundColor = '#020617'; // slate-950
+    } else {
+      root.classList.remove('dark');
+      document.body.style.backgroundColor = '#ffffff'; // pure white
+    }
+  }, [isDarkMode]);
+
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
-  // Vaya's portrait image
+  // Vaya's portrait image URL used across the application.
   const vayaImageUrl = "https://i.ibb.co/0yKQmFyh/unnamed.jpg"; 
 
   return (
-    <div className={`${isDarkMode ? 'dark' : ''}`}>
-      <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+    <div className={`${isDarkMode ? 'dark' : ''} min-h-screen transition-colors duration-300`}>
+      <div className="flex min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
         <Sidebar 
           activeSection={activeSection} 
           setActiveSection={setActiveSection} 
@@ -51,7 +62,7 @@ const App: React.FC = () => {
         />
         
         <main className="flex-1 max-w-6xl mx-auto p-4 md:p-10 space-y-16 pb-32">
-          {/* Section: Wie is Vaya */}
+          {/* Section: Wie is Vaya - Introduction and context. */}
           <section id="wie" className="space-y-8 scroll-mt-10">
             <header className="flex flex-col md:flex-row items-center md:items-end justify-between gap-6">
               <div className="flex items-center gap-6">
@@ -116,145 +127,84 @@ const App: React.FC = () => {
                   <ResponsiveContainer width="100%" height="100%">
                     <RadarChart cx="50%" cy="50%" outerRadius="80%" data={PERSONALITY_TRAITS}>
                       <PolarGrid stroke={isDarkMode ? "#334155" : "#e2e8f0"} />
-                      <PolarAngleAxis dataKey="name" tick={{ fill: isDarkMode ? '#94a3b8' : '#64748b', fontSize: 10, fontWeight: 700 }} />
+                      {/* FIX: Set dataKey to "name" as a string to match the data structure and resolve type error. */}
+                      <PolarAngleAxis dataKey="name" tick={{ fill: isDarkMode ? '#94a3b8' : '#64748b', fontSize: 10 }} />
                       <RechartsRadar
                         name="Vaya"
                         dataKey="score"
-                        stroke={PALETTE.purple}
-                        fill={PALETTE.purple}
-                        fillOpacity={0.4}
+                        stroke="#7c3aed"
+                        fill="#7c3aed"
+                        fillOpacity={0.6}
                       />
                     </RadarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-sm border border-slate-100 dark:border-slate-800">
-                <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                  <Target className="text-[#c8f53c] w-5 h-5" /> Doelen & Behoeften
-                </h3>
-                <ul className="space-y-4">
-                  {[
-                    { text: 'Woordenschat vergroten voor schoolboeken', icon: <BookOpen className="w-4 h-4" /> },
-                    { text: 'Zelfvertrouwen in sociale groepschats', icon: <MessageCircle className="w-4 h-4" /> },
-                    { text: 'Visueel leren met afbeeldingen/video', icon: <Palette className="w-4 h-4" /> },
-                  ].map((goal, idx) => (
-                    <li key={idx} className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 transition-transform hover:scale-[1.02]">
-                      <span className="bg-[#7c3aed] text-white p-2.5 rounded-xl">{goal.icon}</span>
-                      <span className="text-slate-700 dark:text-slate-300 font-bold">{goal.text}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-sm border border-slate-100 dark:border-slate-800">
-                <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-[#fb923c]">
-                  <AlertCircle className="w-5 h-5" /> Frustraties & Drempels
-                </h3>
-                <div className="space-y-5">
-                  <div className="flex gap-4">
-                    <div className="h-2 w-2 rounded-full bg-[#fb923c] mt-2.5 shrink-0"></div>
-                    <div>
-                      <h4 className="font-bold text-slate-800 dark:text-slate-200">Academische Taal</h4>
-                      <p className="text-sm text-slate-500 dark:text-slate-400">Vaktermen geven haar het gevoel minder slim te zijn dan ze is.</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-4">
-                    <div className="h-2 w-2 rounded-full bg-[#fb923c] mt-2.5 shrink-0"></div>
-                    <div>
-                      <h4 className="font-bold text-slate-800 dark:text-slate-200">De Rol van Helper</h4>
-                      <p className="text-sm text-slate-500 dark:text-slate-400">Balans vinden tussen gezin en haar eigen schoolwerk.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </section>
 
-          {/* Section: Problemen & Behoeften */}
-          <section id="problemen" className="space-y-8 scroll-mt-10">
-            <div className="text-center max-w-2xl mx-auto space-y-2">
-              <h2 className="text-3xl font-black italic">Diepere Inzichten</h2>
-              <p className="text-slate-500 dark:text-slate-400">De barrières die Vaya elke dag moet overwinnen.</p>
-            </div>
-
-            <div className="grid grid-cols-1 gap-8">
+          {/* Section: Problemen & Behoeften - Visualizing the persona's pain points. */}
+          <section id="problemen" className="space-y-8 scroll-mt-24">
+            <h3 className="text-3xl font-black flex items-center gap-3">
+              <AlertCircle className="text-[#f43f5e] w-8 h-8" /> Inzichten & Uitdagingen
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {PROBLEMS_NEEDS.map((item, idx) => (
-                <div key={idx} className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col md:flex-row group transition-all hover:shadow-xl">
-                  <div className="md:w-1/3 bg-slate-50 dark:bg-slate-800/30 p-8 border-r border-slate-100 dark:border-slate-800 flex flex-col">
-                    <div className="w-14 h-14 rounded-2xl bg-[#7c3aed] text-white flex items-center justify-center mb-6 font-black text-2xl shadow-lg shadow-indigo-100 dark:shadow-none">
-                      {idx + 1}
-                    </div>
-                    <h3 className="text-2xl font-black text-slate-900 dark:text-white leading-tight mb-4">{item.title}</h3>
-                    <div className="mt-auto">
-                      <span className="text-[10px] font-black uppercase text-[#7c3aed] tracking-[0.2em]">Urgentie</span>
-                      <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 italic font-medium">{item.urgency}</p>
-                    </div>
+                <div key={idx} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col">
+                  <div className="mb-6">
+                    <h4 className="text-xl font-bold mb-2">{item.title}</h4>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">{item.problem}</p>
                   </div>
-                  <div className="flex-1 p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-4 flex-1">
+                    <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl">
+                      <p className="text-[10px] font-black uppercase text-[#f43f5e] mb-2 tracking-widest">Urgentie</p>
+                      <p className="text-sm font-medium">{item.urgency}</p>
+                    </div>
                     <div>
-                      <h4 className="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-[0.2em] flex items-center gap-2">
-                         <AlertCircle className="w-3 h-3 text-[#fb923c]" /> Het Probleem
-                      </h4>
-                      <p className="text-slate-700 dark:text-slate-300 font-bold leading-relaxed text-lg">{item.problem}</p>
-                      
-                      <h4 className="text-[10px] font-black uppercase text-slate-400 mt-8 mb-4 tracking-[0.2em]">Dagelijkse Impact</h4>
-                      <ul className="space-y-3">
+                      <p className="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">Impact</p>
+                      <ul className="space-y-2">
                         {item.impact.map((imp, i) => (
-                          <li key={i} className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400 font-medium">
-                            <CheckCircle2 className="w-5 h-5 text-[#c8f53c] shrink-0 mt-0.5" />
-                            <span>{imp}</span>
+                          <li key={i} className="flex gap-2 text-xs text-slate-600 dark:text-slate-400">
+                            <CheckCircle2 className="w-4 h-4 text-[#c8f53c] shrink-0" /> {imp}
                           </li>
                         ))}
                       </ul>
                     </div>
-                    <div className="bg-[#7c3aed]/5 dark:bg-[#7c3aed]/10 rounded-[2rem] p-8 flex flex-col justify-center items-center text-center border border-[#7c3aed]/10">
-                      <BrainCircuit className="w-12 h-12 text-[#7c3aed] mb-5" />
-                      <h4 className="text-[10px] font-black uppercase text-[#7c3aed]/60 mb-3 tracking-[0.2em]">Onderliggende Behoefte</h4>
-                      <p className="text-slate-900 dark:text-white font-black text-xl leading-tight italic">"{item.underlyingNeed}"</p>
-                    </div>
+                  </div>
+                  <div className="mt-8 pt-6 border-t border-slate-50 dark:border-slate-800">
+                    <p className="text-[10px] font-black uppercase text-[#7c3aed] mb-1 tracking-widest">Dieperliggende Behoefte</p>
+                    <p className="text-sm font-bold italic">"{item.underlyingNeed}"</p>
                   </div>
                 </div>
               ))}
             </div>
           </section>
 
-          {/* Section: Dag in het Leven */}
-          <section id="dag" className="space-y-12 scroll-mt-10">
-            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-6">
-               <h2 className="text-3xl font-black italic">Een Dag uit het Leven</h2>
-               <div className="flex gap-4">
-                  <span className="flex items-center gap-1.5 text-[10px] text-slate-400 font-black uppercase tracking-widest"><div className="w-2.5 h-2.5 rounded-full bg-[#7c3aed]"></div> Thuis</span>
-                  <span className="flex items-center gap-1.5 text-[10px] text-slate-400 font-black uppercase tracking-widest"><div className="w-2.5 h-2.5 rounded-full bg-[#f43f5e]"></div> School</span>
-               </div>
-            </div>
-
-            <div className="relative border-l-4 border-slate-200 dark:border-slate-800 ml-6 space-y-12 pb-12">
+          {/* Section: Een Dag in het Leven - Daily routine timeline. */}
+          <section id="dag" className="space-y-8 scroll-mt-24">
+            <h3 className="text-3xl font-black flex items-center gap-3">
+              <Clock className="text-[#fb923c] w-8 h-8" /> De Dagelijkse Routine
+            </h3>
+            <div className="relative space-y-4">
+              <div className="absolute left-[27px] top-0 bottom-0 w-0.5 bg-slate-100 dark:bg-slate-800 hidden md:block"></div>
               {TIMELINE_DATA.map((entry, idx) => (
-                <div key={idx} className="relative pl-12">
-                  <div className={`absolute -left-[14px] top-1 w-6 h-6 rounded-full border-4 border-white dark:border-slate-950 shadow-md ${
-                    entry.type === 'home' ? 'bg-[#7c3aed]' :
-                    entry.type === 'school' ? 'bg-[#f43f5e]' :
-                    entry.type === 'creative' ? 'bg-[#c8f53c]' : 'bg-[#fb923c]'
-                  }`}></div>
-                  
-                  <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-12">
-                    <div className="md:w-32 shrink-0 pt-1">
-                      <span className="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tighter">{entry.time}</span>
+                <div key={idx} className="relative flex flex-col md:flex-row gap-6 md:gap-12 items-start md:items-center group">
+                  <div className="flex items-center gap-4 z-10">
+                    <div className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center shadow-sm text-sm font-black text-[#7c3aed] shrink-0">
+                      {entry.time}
                     </div>
-                    <div className="flex-1 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-800 hover:border-[#7c3aed]/30 transition-all group">
-                      <div className="flex justify-between items-start mb-3">
-                        <h3 className="text-2xl font-black text-slate-900 dark:text-white group-hover:text-[#7c3aed] transition-colors">{entry.title}</h3>
-                        {entry.type === 'school' && <span className="bg-[#f43f5e]/10 text-[#f43f5e] text-[10px] font-black uppercase px-3 py-1 rounded-full border border-[#f43f5e]/20 tracking-widest">Pijnpunt</span>}
+                  </div>
+                  <div className="flex-1 bg-white dark:bg-slate-900 p-6 md:p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm group-hover:border-[#7c3aed]/30 transition-colors">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div>
+                        <h4 className="font-bold text-lg mb-1">{entry.title}</h4>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed max-w-2xl">{entry.description}</p>
                       </div>
-                      <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6 text-lg font-medium">{entry.description}</p>
-                      <div className="flex items-center gap-3 pt-6 border-t border-slate-50 dark:border-slate-800/50">
-                        <Layers className="w-5 h-5 text-slate-300" />
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Touchpoint:</span>
-                        <span className="text-sm font-black text-[#7c3aed]">{entry.touchpoint}</span>
-                      </div>
+                      {entry.touchpoint && (
+                        <div className="px-4 py-2 bg-slate-50 dark:bg-slate-800 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-400 border border-slate-100 dark:border-slate-700 whitespace-nowrap">
+                          {entry.touchpoint}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -262,66 +212,36 @@ const App: React.FC = () => {
             </div>
           </section>
 
-          {/* Section: Touchpoints */}
-          <section id="touchpoints" className="space-y-8 scroll-mt-10">
-             <div className="bg-slate-900 dark:bg-black rounded-[3.5rem] p-10 md:p-20 text-white overflow-hidden relative shadow-2xl">
-                <div className="absolute top-0 right-0 w-[30rem] h-[30rem] bg-[#7c3aed]/10 rounded-full blur-[100px] -mr-40 -mt-40"></div>
-                <div className="absolute bottom-0 left-0 w-[30rem] h-[30rem] bg-[#f43f5e]/10 rounded-full blur-[100px] -ml-40 -mb-40"></div>
-
-                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16">
-                  <div className="space-y-12">
-                    <h2 className="text-4xl font-black italic tracking-tight">Tools & Touchpoints</h2>
-                    <div className="grid grid-cols-1 gap-8">
-                      {TOUCHPOINTS.map((group, idx) => (
-                        <div key={idx} className="space-y-4">
-                          <h4 className="text-[10px] font-black uppercase text-[#c8f53c] tracking-[0.4em]">{group.category}</h4>
-                          <div className="flex flex-wrap gap-3">
-                            {group.items.map((item, i) => (
-                              <span key={i} className="bg-white/5 backdrop-blur-xl px-5 py-2.5 rounded-2xl text-sm font-bold border border-white/10 hover:bg-white/10 transition-all hover:scale-105">
-                                {item}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="bg-white/5 backdrop-blur-2xl rounded-[3rem] p-10 border border-white/10 space-y-8 flex flex-col justify-center">
-                    <h3 className="text-2xl font-black flex items-center gap-4 italic">
-                      <Smartphone className="w-8 h-8 text-[#a855f7]" /> Digitale Voorkeuren
-                    </h3>
-                    <div className="space-y-6">
-                      <div className="flex gap-6 p-6 rounded-[2rem] bg-white/5 border border-white/5 hover:border-white/20 transition-all">
-                        <Palette className="w-8 h-8 text-[#f43f5e] shrink-0" />
-                        <div>
-                          <h4 className="font-black text-lg mb-1 italic">Creativiteit</h4>
-                          <p className="text-sm text-slate-400 font-medium">"Tekenen is mijn ontsnapping. Geen woorden nodig."</p>
-                        </div>
+          {/* Section: Touchpoints - Tools and ecosystem overview. */}
+          <section id="touchpoints" className="space-y-8 scroll-mt-24">
+            <h3 className="text-3xl font-black flex items-center gap-3">
+              <Layers className="text-[#c8f53c] w-8 h-8" /> Ecosystem & Tools
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {TOUCHPOINTS.map((category, idx) => (
+                <div key={idx} className="space-y-4">
+                  <h4 className="text-sm font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${
+                      category.category === 'Analoog' ? 'bg-[#fb923c]' : category.category === 'Digitaal' ? 'bg-[#7c3aed]' : 'bg-[#f43f5e]'
+                    }`}></div>
+                    {category.category}
+                  </h4>
+                  <div className="bg-white dark:bg-slate-900 p-4 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm space-y-2">
+                    {category.items.map((item, i) => (
+                      <div key={i} className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl text-sm font-bold flex items-center justify-between group hover:bg-[#7c3aed]/5 transition-colors">
+                        {item}
+                        <CheckCircle2 className="w-4 h-4 text-[#c8f53c] opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
-                      <div className="flex gap-6 p-6 rounded-[2rem] bg-white/5 border border-white/5 hover:border-white/20 transition-all">
-                        <BookOpen className="w-8 h-8 text-[#7c3aed] shrink-0" />
-                        <div>
-                          <h4 className="font-black text-lg mb-1 italic">Audio Content</h4>
-                          <p className="text-sm text-slate-400 font-medium">"Luisteren helpt me teksten beter te onthouden."</p>
-                        </div>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
-             </div>
+              ))}
+            </div>
           </section>
-
-          <footer className="pt-24 text-center border-t border-slate-200 dark:border-slate-800">
-             <div className="inline-block px-4 py-2 bg-slate-100 dark:bg-slate-900 rounded-full mb-6">
-                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500">Persona Analysis Project</p>
-             </div>
-             <p className="text-sm font-bold text-slate-400 italic">Vaya: De Stille Kracht • 2024</p>
-          </footer>
         </main>
       </div>
 
-      {/* Live Chat Component */}
+      {/* Chat Overlay for interacting with the Vaya persona. */}
       {isChatOpen && (
         <ChatComponent 
           isOpen={isChatOpen} 
@@ -329,21 +249,9 @@ const App: React.FC = () => {
           vayaImage={vayaImageUrl}
         />
       )}
-
-      {/* Floating Chat Button (if closed) */}
-      {!isChatOpen && (
-        <button 
-          onClick={() => setIsChatOpen(true)}
-          className="fixed bottom-8 right-8 w-16 h-16 bg-[#7c3aed] text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all z-40 group"
-        >
-          <MessageSquare className="w-7 h-7" />
-          <span className="absolute right-full mr-4 bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-4 py-2 rounded-xl text-sm font-bold shadow-xl border border-slate-100 dark:border-slate-800 opacity-0 group-hover:opacity-100 pointer-events-none transition-all whitespace-nowrap">
-            Praat met Vaya
-          </span>
-        </button>
-      )}
     </div>
   );
 };
 
+// FIX: Export default App to ensure the module can be imported correctly in index.tsx.
 export default App;
