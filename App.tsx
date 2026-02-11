@@ -37,7 +37,7 @@ const App: React.FC = () => {
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
   // Vaya's portrait image
-  const vayaImageUrl = "https://files.oaiusercontent.com/file-K1kYv8JvF5y4v8v8v8v8v8v8"; 
+  const vayaImageUrl = "https://i.ibb.co/0yKQmFyh/unnamed.jpg"; 
 
   return (
     <div className={`${isDarkMode ? 'dark' : ''}`}>
