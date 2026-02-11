@@ -12,54 +12,63 @@ import {
 } from 'lucide-react';
 import React from 'react';
 
+// New Palette based on the provided image
+export const PALETTE = {
+  lime: '#c8f53c',
+  purple: '#7c3aed',
+  pink: '#f43f5e',
+  orange: '#fb923c',
+  lightPurple: '#a855f7'
+};
+
 export const PERSONALITY_TRAITS = [
-  { name: 'Stille Kracht', score: 90, color: '#6366f1', icon: <UserPlus className="w-4 h-4" /> },
-  { name: 'Creativiteit', score: 95, color: '#ec4899', icon: <Palette className="w-4 h-4" /> },
-  { name: 'Zorgzaamheid', score: 85, color: '#10b981', icon: <Home className="w-4 h-4" /> },
-  { name: 'Sociaal Zelfvertrouwen', score: 40, color: '#f59e0b', icon: <MessageCircle className="w-4 h-4" /> },
-  { name: 'Taalbeheersing (Academisch)', score: 55, color: '#06b6d4', icon: <BookOpen className="w-4 h-4" /> },
+  { name: 'Stille Kracht', score: 90, color: PALETTE.purple },
+  { name: 'Creativiteit', score: 95, color: PALETTE.pink },
+  { name: 'Zorgzaamheid', score: 85, color: PALETTE.orange },
+  { name: 'Sociaal Zelfvertrouwen', score: 40, color: PALETTE.lime },
+  { name: 'Taalbeheersing (Ac)', score: 55, color: PALETTE.lightPurple },
 ];
 
 export const TIMELINE_DATA: TimelineEntry[] = [
   {
     time: '07:30',
     title: 'De Ochtendroutine',
-    description: 'Helpt haar jongste broertje met zijn gymtas en scant een brief van de gemeente voor haar ouders.',
-    touchpoint: 'Fysieke agenda met kleurcodes',
+    description: 'Helpt haar jongste broertje en scant documenten voor haar ouders.',
+    touchpoint: 'Fysieke agenda',
     type: 'home'
   },
   {
     time: '10:15',
     title: 'De Geschiedenisles',
-    description: 'De industriële revolutie. De snelheid van het Nederlands is hoog, wat een knoop in haar maag veroorzaakt.',
-    touchpoint: 'Schoolboeken / Docent',
+    description: 'Vaktaal en snelheid veroorzaken spanning tijdens de tekstverwerking.',
+    touchpoint: 'Schoolboeken',
     type: 'school'
   },
   {
     time: '14:00',
     title: 'De Creatieve Pauze',
-    description: 'Trekt zich terug in de mediatheek om te tekenen op haar tablet en luistert naar een audioboek.',
-    touchpoint: 'Tablet (Procreate) & Audioboek-app',
+    description: 'Tekenen op tablet en luisteren naar een audioboek in de mediatheek.',
+    touchpoint: 'Tablet (Procreate)',
     type: 'creative'
   },
   {
     time: '16:30',
     title: 'Sociale Interactie',
-    description: 'Fietsend naar huis trilt de telefoon: de klassen-app plant een uitje. Vaya twijfelt over haar antwoord.',
+    description: 'Leest mee in de klassen-app maar twijfelt over reageren.',
     touchpoint: 'WhatsApp',
     type: 'social'
   },
   {
     time: '19:00',
     title: 'De Tolkrol & Huiswerk',
-    description: 'Helpt haar vader met een e-mail en werkt ijverig door aan haar biologieverslag met een vertaal-app.',
-    touchpoint: 'Vertaal-app / Digitaal woordenboek',
+    description: 'Ondersteunt ouders met e-mail en werkt aan biologie met vertaalhulp.',
+    touchpoint: 'Vertaal-app',
     type: 'home'
   },
   {
     time: '21:30',
     title: 'Afsluiting',
-    description: 'Eén laatste schets in haar digitale tekenboek voor een voldaan gevoel voor het slapengaan.',
+    description: 'Laatste digitale schets zorgt voor rust voor het slapengaan.',
     touchpoint: 'Digitale tekenboek',
     type: 'creative'
   }
@@ -67,41 +76,41 @@ export const TIMELINE_DATA: TimelineEntry[] = [
 
 export const PROBLEMS_NEEDS: ProblemNeed[] = [
   {
-    title: 'Taalonzekerheid in Academische Context',
-    problem: 'Vaya begrijpt de kern vaak wel, maar struikelt over vaktaal en lange zinnen.',
-    urgency: 'In de brugklas wordt de basis gelegd. Taalbarrières kunnen haar zelfbeeld blijvend schaden.',
+    title: 'Taalonzekerheid (Academisch)',
+    problem: 'Struikelblokken in vaktaal en complexe zinsbouw bemoeilijken begrip.',
+    urgency: 'Kritieke fase in de brugklas voor zelfbeeld en schoolloopbaan.',
     impact: [
-      'Huiswerk kost meer tijd en energie',
-      'Constant twijfelen aan eigen kunnen',
-      'Durft minder snel hulp te vragen'
+      'Huiswerk kost onevenredig veel energie',
+      'Constante zelftwijfel over capaciteiten',
+      'Hoge drempel voor hulpvragen in de klas'
     ],
-    underlyingNeed: 'Toegankelijke uitleg met visuele ondersteuning.'
+    underlyingNeed: 'Visuele ondersteuning bij complexe abstracte stof.'
   },
   {
-    title: 'Angst voor Sociale Zichtbaarheid',
-    problem: 'Bang voor spelfouten in tekst die "blijft staan" (zoals in groepsapps).',
-    urgency: 'Sociale veiligheid is cruciaal op deze leeftijd om isolatie te voorkomen.',
+    title: 'Sociale Zichtbaarheidsangst',
+    problem: 'Bang voor spelfouten in blijvende digitale tekst.',
+    urgency: 'Cruciaal voor sociale veiligheid en verbinding in de klas.',
     impact: [
-      'Leest berichten maar reageert nauwelijks',
-      'Denkt té lang na over simpele antwoorden',
-      'Mist kansen voor diepere vriendschappen'
+      'Passieve deelname aan groepsinteractie',
+      'Overmatige bedenktijd voor simpele antwoorden',
+      'Risico op sociaal isolement'
     ],
-    underlyingNeed: 'Veilige manier om te communiceren zonder oordeel.'
+    underlyingNeed: 'Laagdrempelig en veilig communicatiekanaal.'
   },
   {
-    title: 'Mentale Belasting door Thuisrol',
-    problem: 'Veel verantwoordelijkheid als helpende hand en tolk voor haar ouders.',
-    urgency: 'Emotionele overbelasting dreigt door de combinatie van nieuwe school en zorgrol.',
+    title: 'Thuis-verantwoordelijkheid',
+    problem: 'Draagt een zware rol als tolk en helper binnen het gezin.',
+    urgency: 'Risico op emotionele overbelasting naast schoolwerk.',
     impact: [
-      'Minder tijd voor eigen schoolwerk',
-      'Moeite met ontspannen zonder schuldgevoel'
+      'Gefragmenteerde focus op eigen studie',
+      'Moeite met schuldvrije ontspanning'
     ],
-    underlyingNeed: 'Structuur en erkenning: iemand die háár ook eens ondersteunt.'
+    underlyingNeed: 'Erkenning en externe structurele ondersteuning.'
   }
 ];
 
 export const TOUCHPOINTS: Touchpoint[] = [
-  { category: 'Analoog', items: ['Familie-documenten', 'Schoolboeken', 'Fysieke agenda'] },
-  { category: 'Digitaal', items: ['Tablet (Procreate/Canva)', 'Audioboek-app', 'WhatsApp', 'Vertaal-software'] },
-  { category: 'Sociaal', items: ['Interactie met docent', 'Groepschat met klasgenoten'] }
+  { category: 'Analoog', items: ['Gezins-documenten', 'Schoolboeken', 'Kleurgecodeerde agenda'] },
+  { category: 'Digitaal', items: ['iPad (Procreate/Canva)', 'Audioboek-apps', 'WhatsApp', 'DeepL/Vertaal-software'] },
+  { category: 'Sociaal', items: ['Interactie docent', 'Klassen-groepschat'] }
 ];
