@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from './components/Sidebar';
+import './index.css';
 import ChatComponent from './components/ChatComponent';
 import { 
   Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer,
